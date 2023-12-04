@@ -8,8 +8,8 @@
 (defn parse-cards [cards]
   (reduce (fn [a card]
             (let [parts (split card #"[:|]")
-                  [wins mine] (map #(set (re-seq #"\d+" %)) (rest parts))
-                  id (Integer/parseInt (last (re-seq #"\d+" (first parts))))]
+                  id (Integer/parseInt (last (re-seq #"\d+" (first parts))))
+                  [wins mine] (map #(set (re-seq #"\d+" %)) (rest parts))]
               (assoc a id (count (clojure.set/intersection wins mine)))))
           {}
           cards))
@@ -22,14 +22,13 @@
        (reduce +)))
 
 (defn part2 [cards]
-  (let [original-cards (into (sorted-map) (parse-cards cards))]
-    (->> (reduce (fn [copies [id matching-numbers]]
-                   (let [cards (range (inc id) (+ id matching-numbers 1))]
-                     (reduce (fn [acc card] (update-in acc [card] (fn [x] (+ x (get acc id))))) copies cards)))
-                 (zipmap (range 1 (inc (count original-cards))) (iterate identity 1))
-                 original-cards)
-         (vals)
-         (reduce +))))
+  (->> (reduce (fn [copies [id matching-numbers]]
+                 (let [cards (range (inc id) (+ id matching-numbers 1))]
+                   (reduce (fn [a id'] (update a id' (fn [x] (+ (or x 1) (get a id 1))))) copies cards)))
+               {}
+               (into (sorted-map) (parse-cards cards)))
+       (vals)
+       (reduce +)))
 
 (part1 lines)
 (part2 lines)
