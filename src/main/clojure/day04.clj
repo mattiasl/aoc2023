@@ -1,9 +1,8 @@
 (ns day04
-  (:require [clojure.string :refer [split]]))
+  (:require [clojure.string :refer [split]]
+            [clojure.math]))
 
 (def lines (split (slurp "./src/main/clojure/inputs/day04.in") #"\n"))
-
-(defn pow [a b] (reduce * 1 (repeat b a)))
 
 (defn parse-cards [cards]
   (reduce (fn [a card]
@@ -18,7 +17,7 @@
   (->> (parse-cards cards)
        (vals)
        (filter #(> % 0))
-       (map #(pow 2 (dec %)))
+       (map #(clojure.math/pow 2 (dec %)))
        (reduce +)))
 
 (defn part2 [cards]
