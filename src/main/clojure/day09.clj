@@ -3,18 +3,15 @@
 
 (def input (split (slurp "./src/main/clojure/inputs/day09.in") #"\n"))
 
-(defn extrapolate [part2 sequence]
+(defn extrapolate [sequence]
   (if (every? zero? sequence)
     0
-    (let [differences (->> (partition 2 1 sequence)
-                           (mapv (fn [[a b]] (- b a))))]
-      (if part2
-        (- (first sequence) (extrapolate part2 differences))
-        (+ (extrapolate part2 differences) (last sequence))))))
+    (let [differences (map (fn [[a b]] (- b a)) (partition 2 1 sequence))]
+      (+ (extrapolate differences) (last sequence)))))
 
-(map (fn [part]
+(map (fn [f]
        (->> (map #(split % #" ") input)
-            (mapv (fn [x] (mapv read-string x)))
-            (map (partial extrapolate part))
+            (map #(f (map read-string %)))
+            (map extrapolate)
             (reduce +)))
-     [false true])
+     [identity reverse])
