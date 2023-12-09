@@ -3,17 +3,13 @@
 
 (def input (split (slurp "./src/main/clojure/inputs/day09.in") #"\n"))
 
-(defn get-diff [sequence]
-  (->> (partition 2 1 sequence)
-       (mapv (fn [[a b]] (- b a)))))
-
-(defn prediction [sequence]
+(defn difference [sequence]
   (loop [history [sequence]]
-    (let [last-sequence (peek history)
-          freq (frequencies last-sequence)]
-      (if (= (get freq 0) (count last-sequence))
+    (let [last-sequence (peek history)]
+      (if (every? zero? last-sequence)
         (pop history)
-        (recur (conj history (get-diff last-sequence)))))))
+        (recur (conj history (->> (partition 2 1 last-sequence)
+                                  (mapv (fn [[a b]] (- b a))))))))))
 
 (defn extrapolate [part2 history]
   (loop [history history
@@ -30,7 +26,7 @@
 (map (fn [part]
        (->> (map #(split % #" ") input)
             (mapv (fn [x] (mapv read-string x)))
-            (mapv prediction)
+            (mapv difference)
             (map (partial extrapolate part))
             (reduce +)))
      [false true])
