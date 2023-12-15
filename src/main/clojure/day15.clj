@@ -21,7 +21,7 @@
 
 (defn rm [label boxes]
   (let [box (snh label)
-        lenses (update (get boxes box) :order (fn [x] (filterv #(not (= label %)) x)))]
+        lenses (update (boxes box) :order (fn [x] (filterv #(not (= label %)) x)))]
     (assoc boxes box (dissoc lenses label))))
 
 (defn focus-power [[box-number box]]
