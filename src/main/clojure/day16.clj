@@ -22,15 +22,14 @@
 
 (defn energized-tiles [grid initial-beams]
   (loop [beams initial-beams
-         energized #{}
-         visited #{}]
+         energized #{}]
     (if (empty? beams)
-      energized
+      (set (map first energized))
       (let [beam (first beams)]
-        (if (contains? visited beam)
-          (recur (rest beams) energized visited)
+        (if (contains? energized beam)
+          (recur (rest beams) energized)
           (let [pos (first beam)]
-            (recur (concat (rest beams) (expand beam (grid pos))) (conj energized pos) (conj visited beam))))))))
+            (recur (into (rest beams) (expand beam (grid pos))) (conj energized beam))))))))
 
 (defn part2 [input]
   (let [grid (make-grid input)]
