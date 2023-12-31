@@ -16,16 +16,16 @@
 (defn grid-size [input]
   [(count (first input)) (count input)])
 
-(defn rot [uv dir]
-  (reduce (fn [a c] (conj a (reduce + (map * uv c)))) [] (rotation-matrix dir)))
+(defn rot [unit-vec dir-id]
+  (reduce (fn [a c] (conj a (reduce + (map * unit-vec c)))) [] (rotation-matrix dir-id)))
 
-(defn get-neighbours [[xm ym] [start end] [pos v steps]]
-  (->> (reduce (fn [neighbours dir]
-                 (let [v' (rot v dir)
-                       pos' (mapv + pos v')]
+(defn get-neighbours [[xm ym] [min-steps max-steps] [pos unit-vec steps]]
+  (->> (reduce (fn [neighbours dir-id]
+                 (let [unit-vec' (rot unit-vec dir-id)
+                       pos' (mapv + pos unit-vec')]
                    (cond
-                     (and (= dir :straight) (< steps end)) (conj neighbours [pos' v' (inc steps)])
-                     (and (not= dir :straight) (<= start steps)) (conj neighbours [pos' v' 1])
+                     (and (= dir-id :straight) (< steps max-steps)) (conj neighbours [pos' unit-vec' (inc steps)])
+                     (and (not= dir-id :straight) (<= min-steps steps)) (conj neighbours [pos' unit-vec' 1])
                      :else
                      neighbours)))
                []
@@ -36,25 +36,25 @@
   (let [initial-state (reduce (fn [a [k v]] (assoc a k v)) {} source)]
     (loop [q (into (priority-map) initial-state)
            state initial-state]
-      (let [[[u v s] loss] (peek q)]
+      (let [[[u dir steps] loss] (peek q)]
         (if (= u target)
           loss
-          (let [result (reduce (fn [a [neighbour v' s']]
-                                 (let [alt (+ (get state [u v s] +inf) (blocks neighbour))
-                                       dist (get state [neighbour v' s'] +inf)]
+          (let [result (reduce (fn [a [neighbour dir' steps']]
+                                 (let [alt (+ (get state [u dir steps] +inf) (blocks neighbour))
+                                       dist (get state [neighbour dir' steps'] +inf)]
                                    (if (< alt dist)
-                                     (assoc a [neighbour v' s'] alt)
+                                     (assoc a [neighbour dir' steps'] alt)
                                      a)))
                                {}
-                               (f [u v s]))]
+                               (f [u dir steps]))]
             (recur (into (pop q) result) (merge-with union state result))))))))
 
 (defn solve [ranges input]
   (let [blocks (make-map input)
         size (grid-size input)
-        start (map (fn [z] [[z z 1] (blocks z)]) [[1 0] [0 1]])
+        source (map (fn [z] [[z z 1] (blocks z)]) [[1 0] [0 1]])
         f (partial get-neighbours size ranges)]
-    (dijkstra start (map dec size) f blocks)))
+    (dijkstra source (map dec size) f blocks)))
 
 (comment
   (time (solve [1 3] lines))
