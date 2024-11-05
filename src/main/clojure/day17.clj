@@ -5,7 +5,7 @@
 
 (def lines (split (slurp "./src/main/clojure/inputs/day17.in") #"\n"))
 
-(def +inf (Integer/MAX_VALUE))
+(def +inf Integer/MAX_VALUE)
 (def rotation-matrix {:right [[0 -1] [1 0]] :left [[0 1] [-1 0]] :straight [[1 0] [0 1]]})
 
 (defn make-map [input]
