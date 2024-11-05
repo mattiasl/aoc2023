@@ -81,13 +81,13 @@
     (->> (reduce (fn [state button-push-count]
                    (let [state (push-once (assoc state :button-push-count button-push-count))
                          monitored-modules (select-keys (state :pulses) monitored)]
-                     (if (some zero? (map (fn [x] (x :low) (vals monitored-modules))))
+                     (if (some zero? (map (fn [x] (x :low)) (vals monitored-modules)))
                        state
-                       (reduced monitored-modules)))
-                   {:modules   (create-modules input)
-                    :monitored monitored
-                    :start     "broadcaster"
-                    :pulses    {}})
+                       (reduced monitored-modules))))
+                 {:modules   (create-modules input)
+                  :monitored monitored
+                  :start     "broadcaster"
+                  :pulses    {}}
                  (range 1 8000))                            ;8000 seems to be enough to find cycle-lengths with my input
          (vals)
          (map (fn [x] (x :button-push-count)))

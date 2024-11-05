@@ -38,7 +38,7 @@
   (let [garden-size (count (first input))
         non-complete-garden-steps (mod steps garden-size)
         ; calculate the third of the initial sequence of three is what takes most of the time
-        sequence (map #(time (part-1 (+ non-complete-garden-steps (* % garden-size)) input)) (range 3))
+        sequence (pmap #(time (part-1 (+ non-complete-garden-steps (* % garden-size)) input)) (range 3))
         end (/ (- steps non-complete-garden-steps) garden-size)]
     (->> (range (count sequence) (+ 2 end))
          (reduce (fn [s _] (into [] (rest (conj s (extrapolate s))))) sequence)

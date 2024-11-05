@@ -1,6 +1,6 @@
 (ns day23
-  (:require [clojure.string :refer [split]]
-            [clojure.set :refer [intersection]] ))
+  (:require [clojure.set :refer [intersection]]
+            [clojure.string :refer [split]]))
 
 (def lines (split (slurp "./src/main/clojure/inputs/day23.in") #"\n"))
 
