@@ -1,5 +1,5 @@
-{:deps  {org.clojure/clojure           {:mvn/version "1.11.1"}
-         ysera/ysera                   {:mvn/version "2.0.2"}
-         org.clojure/data.priority-map {:mvn/version "1.1.0"}
-         org.clojure/math.combinatorics {:mvn/version "0.2.0"}}
+{:deps  {org.clojure/clojure            {:mvn/version "1.11.4"}
+         ysera/ysera                    {:mvn/version "2.0.2"}
+         org.clojure/data.priority-map  {:mvn/version "1.1.0"}
+         org.clojure/math.combinatorics {:mvn/version "0.3.0"}}
  :paths ["src/main/clojure"]}
